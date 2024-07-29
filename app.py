@@ -36,6 +36,13 @@ def add_message(username, message):
         st.error("Please enter a message.")
         return  # Exit the function without adding the message
 
+    # Check if the username already exists
+    c.execute("SELECT * FROM messages WHERE username=?", (username,))
+    existing_user = c.fetchone()
+    if existing_user:
+        st.error("Username already exists. Please choose another username.")
+        return  # Exit the function without adding the message
+
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Format: YYYY-MM-DD HH:MM:SS
     c.execute("INSERT INTO messages (username, text, timestamp) VALUES (?, ?, ?)", (username, message, timestamp))
     conn.commit()

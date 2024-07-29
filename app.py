@@ -1,5 +1,6 @@
 import streamlit as st
 import sqlite3
+import os
 from datetime import datetime, timedelta
 from streamlit_autorefresh import st_autorefresh
 
@@ -28,10 +29,9 @@ def display_chatroom():
     c.execute("SELECT username, text, timestamp FROM messages ORDER BY id DESC")
     messages = c.fetchall()
     for message in messages[::-1]:
-        st.write(f"{message[0]}: {message[1]}")
+        st.write(f"{message[0]}: {message[1]} at {message[2]}")
         st.write(f"sent {message[2]}")
-        st.write(f"===========================")
-
+        st.write(f"==========================================")
 
 def clear_database():
     """Clear the messages table in the database."""
@@ -45,13 +45,27 @@ st.title('Public Chatroom')
 # User input for sending messages
 default_username = "Guest"
 username = st.text_input('Enter your username:', value=default_username)
-st.write(f"===========================")
+
 # Display chatroom content
 display_chatroom()
-st.write(f"===========================")
+
 message = st.text_input('Type your message here:')
 if st.button('Send Message'):
     add_message(username, message)
+
+# Check if it's time to clear the database
+last_clear_file = 'last_clear.txt'
+if os.path.exists(last_clear_file):
+    with open(last_clear_file, 'r') as file:
+        last_clear_time = datetime.strptime(file.read(), '%Y-%m-%d %H:%M:%S')
+    if datetime.now() - last_clear_time > timedelta(minutes=10):
+        clear_database()
+        with open(last_clear_file, 'w') as file:
+            file.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+else:
+    with open(last_clear_file, 'w') as file:
+        file.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        clear_database()
 
 # Auto-refresh every 3 seconds
 st_autorefresh(interval=3000, key="chatroom_auto_refresh")

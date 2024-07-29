@@ -1,6 +1,5 @@
 import streamlit as st
 import sqlite3
-import os
 from datetime import datetime, timedelta
 from streamlit_autorefresh import st_autorefresh
 
@@ -37,6 +36,10 @@ def clear_database():
     conn.commit()
     st.success("Chatroom cleared.")
 
+# Initialize last clear time
+if 'last_clear_time' not in st.session_state:
+    st.session_state['last_clear_time'] = datetime.now()
+
 # Streamlit UI
 st.title('Public Chatroom')
 
@@ -52,18 +55,9 @@ if st.button('Send Message'):
     add_message(username, message)
 
 # Check if it's time to clear the database
-last_clear_file = 'last_clear.txt'
-if os.path.exists(last_clear_file):
-    with open(last_clear_file, 'r') as file:
-        last_clear_time = datetime.strptime(file.read(), '%Y-%m-%d %H:%M:%S')
-    if datetime.now() - last_clear_time > timedelta(minutes=10):
-        clear_database()
-        with open(last_clear_file, 'w') as file:
-            file.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-else:
-    with open(last_clear_file, 'w') as file:
-        file.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        clear_database()
+if datetime.now() - st.session_state['last_clear_time'] > timedelta(minutes=10):
+    clear_database()
+    st.session_state['last_clear_time'] = datetime.now()
 
 # Auto-refresh every 3 seconds
 st_autorefresh(interval=3000, key="chatroom_auto_refresh")

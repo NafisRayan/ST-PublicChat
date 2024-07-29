@@ -50,10 +50,5 @@ message = st.text_input('Type your message here:')
 if st.button('Send Message'):
     add_message(username, message)
 
-# Check if it's time to clear the database
-if datetime.now() - st.session_state['last_clear_time'] > timedelta(minutes=10):
-    clear_database()
-    st.session_state['last_clear_time'] = datetime.now()
-
 # Auto-refresh every 3 seconds
 st_autorefresh(interval=3000, key="chatroom_auto_refresh")

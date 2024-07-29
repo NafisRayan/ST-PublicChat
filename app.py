@@ -4,9 +4,18 @@ import os
 from datetime import datetime, timedelta
 from streamlit_autorefresh import st_autorefresh
 
-# Set the theme to dark mode
-# st.set_page_config(page_title='Public Chatroom', theme='dark')
-
+# # bg image
+# page_bg_img = """
+# <style>
+# [data-testid="stAppViewContainer"] {
+# background-image: url(
+# https://cdn.wallpapersafari.com/41/41/vIdSZT.jpg
+# );
+# background-size: cover;
+# }
+# </style>
+# """
+# st.markdown(page_bg_img, unsafe_allow_html=True)
 
 # Connect to SQLite database
 def connect_db():
@@ -45,7 +54,7 @@ def clear_database():
     """Clear the messages table in the database."""
     c.execute("DELETE FROM messages")
     conn.commit()
-    st.success("Chatroom cleared.")
+    st.success(f"Chatroom cleared at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
 
 # Streamlit UI
 st.title('Public Chatroom')

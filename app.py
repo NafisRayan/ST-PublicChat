@@ -19,6 +19,10 @@ conn, c = connect_db()
 
 def add_message(username, message):
     """Add a new message to the chatroom, including the sender's username and a timestamp."""
+    if not message.strip():  # Check if the message is not empty after stripping whitespace
+        st.error("Please enter a message.")
+        return  # Exit the function without adding the message
+
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Format: YYYY-MM-DD HH:MM:SS
     c.execute("INSERT INTO messages (username, text, timestamp) VALUES (?, ?, ?)", (username, message, timestamp))
     conn.commit()

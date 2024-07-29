@@ -49,7 +49,7 @@ Upon launching, you'll be greeted with the chatroom interface. Here's how to use
 - **Viewing Messages**: The chatroom displays messages along with usernames and timestamps. Messages are shown in descending order, with the most recent messages appearing first.
 
 ## Database
-The application uses SQLite for storing messages. The database (`chat.db`) automatically created and managed by the application. The database is cleared every 10 minutes to keep the chatroom fresh.
+The application uses SQLite for storing messages. The database (chat.db) and a file (last_clear.txt) for tracking the last clear time are automatically created and managed by the application. The database is cleared every 10 minutes to keep the chatroom fresh, ensuring that the conversation remains relevant and uncluttered.
 
 ## Contributing
 Contributions are welcome! Feel free to fork the repository, make your changes, and submit a pull request.

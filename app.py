@@ -31,7 +31,7 @@ def display_chatroom():
     for message in messages[::-1]:
         st.write(f"{message[0]}: {message[1]} at {message[2]}")
         st.write(f"sent {message[2]}")
-        st.write(f"==========================================")
+        st.write(f"===================================")
 
 def clear_database():
     """Clear the messages table in the database."""

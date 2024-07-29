@@ -145,4 +145,4 @@ else:
         clear_database()
 
 # Auto-refresh every 3 seconds
-# st_autorefresh(interval=3000, key="chatroom_auto_refresh")
+st_autorefresh(interval=3000, key="chatroom_auto_refresh")

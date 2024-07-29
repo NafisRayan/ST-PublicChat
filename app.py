@@ -30,6 +30,7 @@ def display_chatroom():
     for message in messages[::-1]:
         st.write(f"{message[0]}: {message[1]}")
         st.write(f"sent {message[2]}")
+        st.write(f"===========================")
 
 
 def clear_database():
@@ -44,10 +45,10 @@ st.title('Public Chatroom')
 # User input for sending messages
 default_username = "Guest"
 username = st.text_input('Enter your username:', value=default_username)
-
+st.write(f"===========================")
 # Display chatroom content
 display_chatroom()
-
+st.write(f"===========================")
 message = st.text_input('Type your message here:')
 if st.button('Send Message'):
     add_message(username, message)

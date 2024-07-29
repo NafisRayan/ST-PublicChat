@@ -28,7 +28,9 @@ def display_chatroom():
     c.execute("SELECT username, text, timestamp FROM messages ORDER BY id DESC")
     messages = c.fetchall()
     for message in messages[::-1]:
-        st.write(f"{message[0]}: {message[1]} \n sent {message[2]}")
+        st.write(f"{message[0]}: {message[1]}")
+        st.write(f"sent {message[2]}")
+
 
 def clear_database():
     """Clear the messages table in the database."""

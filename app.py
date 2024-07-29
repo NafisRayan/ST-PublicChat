@@ -2,7 +2,7 @@ import streamlit as st
 import sqlite3
 import os
 from datetime import datetime, timedelta
-import time
+from streamlit_autorefresh import st_autorefresh
 
 # Connect to SQLite database
 def connect_db():
@@ -28,7 +28,7 @@ def display_chatroom():
     """Display the chatroom content, showing messages along with usernames and timestamps."""
     c.execute("SELECT username, text, timestamp FROM messages ORDER BY id DESC")
     messages = c.fetchall()
-    for message in messages:
+    for message in messages[::-1]:
         st.write(f"{message[0]}: {message[1]} at {message[2]}")
 
 def clear_database():
@@ -41,13 +41,15 @@ def clear_database():
 st.title('Public Chatroom')
 
 # User input for sending messages
-username = st.text_input('Enter your username:')
-message = st.text_input('Type your message here:')
-if st.button('Send Message'):
-    add_message(username, message)
+default_username = "Guest"
+username = st.text_input('Enter your username:', value=default_username)
 
 # Display chatroom content
 display_chatroom()
+
+message = st.text_input('Type your message here:')
+if st.button('Send Message'):
+    add_message(username, message)
 
 # Check if it's time to clear the database
 last_clear_file = 'last_clear.txt'
@@ -62,3 +64,6 @@ else:
     with open(last_clear_file, 'w') as file:
         file.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         clear_database()
+
+# Auto-refresh every 3 seconds
+st_autorefresh(interval=3000, key="chatroom_auto_refresh")

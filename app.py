@@ -122,7 +122,7 @@ if 'scrape_news_active' not in st.session_state:
     st.session_state.scrape_news_active = False
 
 # Modify the button logic to toggle the state
-st.write(f"===Use Manage News to Open/Close News Updates===")
+st.write(f"Button for News Updates Below:")
 if st.button('Manage News'):
     st.session_state.scrape_news_active = not st.session_state.scrape_news_active
 

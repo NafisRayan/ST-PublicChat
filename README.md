@@ -7,6 +7,7 @@ ST-PublicChat is a Streamlit-based application designed to provide a platform fo
 - **Real-time Chatting**: Users can send messages in real-time, which are immediately visible to all participants in the chatroom.
 - **User Identification**: Users can enter a username to identify themselves in the chatroom.
 - **Message Timestamps**: Each message is timestamped, providing context on when it was sent.
+- **News Scraping Feature**: Users can toggle the display of the latest news articles directly within the chatroom. This feature allows for quick access to current events and headlines, enhancing the overall experience of the chatroom.
 - **Automatic Database Clearing**: The chatroom messages are automatically cleared every 10 minutes to keep the conversation fresh and manageable.
 - **Auto-refresh**: The chatroom auto-refreshes every 3 seconds to ensure users see the latest messages without manual reloading.
 
@@ -47,6 +48,9 @@ Upon launching, you'll be greeted with the chatroom interface. Here's how to use
 - **Username**: Enter your desired username in the provided text input field.
 - **Sending Messages**: Type your message in the 'Type your message here' input box and click 'Send Message' to post it to the chatroom.
 - **Viewing Messages**: The chatroom displays messages along with usernames and timestamps. Messages are shown in descending order, with the most recent messages appearing first.
+
+## Using the News Scraping Feature
+Within the chatroom interface, you'll find a button labeled 'Manage News'. Clicking this button will toggle the display of the latest news articles. If the feature is turned on, you'll see the most recent news articles below the chatroom. Clicking the button again will turn off this feature, hiding the news articles until you enable it once more.
 
 ## Database
 The application uses SQLite for storing messages. The database (chat.db) and a file (last_clear.txt) for tracking the last clear time are automatically created and managed by the application. The database is cleared every 10 minutes to keep the chatroom fresh, ensuring that the conversation remains relevant and uncluttered.

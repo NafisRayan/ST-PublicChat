@@ -45,7 +45,7 @@ st.title('Public Chatroom')
 # User input for sending messages
 default_username = "Guest"
 username = st.text_input('Enter your username:', value=default_username)
-
+st.write(f"===================================")
 # Display chatroom content
 display_chatroom()
 

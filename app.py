@@ -64,6 +64,45 @@ def clear_database():
     conn.commit()
     st.success(f"Chatroom cleared at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
 
+
+
+
+
+from bs4 import BeautifulSoup
+import requests
+
+from bs4 import BeautifulSoup
+import requests
+
+def scrape_news():
+    url = 'http://thedailystar.net'  # Replace with the actual news site URL
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # Find all div elements with class 'card-image'
+    card_images = soup.find_all('div', class_='card-image')
+    
+    news_items = []
+    for card_image in card_images:
+        # Within each card_image, find the <a> tag with an aria-label attribute
+        link_tag = card_image.find('a', {'aria-label': True})
+        if link_tag:
+            title = link_tag['aria-label']  # Use the aria-label as the title
+            link = link_tag['href']  # Extract the href attribute for the link
+            news_items.append({'title': title, 'link': link})
+    
+    return news_items
+
+
+def display_scraped_news():
+    news_articles = scrape_news()
+    for article in news_articles:
+        st.write(f"## {article['title']}")
+        st.write(f"[Read more]({article['link']})")
+        st.write("====================================")
+
+
+
 # Streamlit UI
 st.title('Public Chatroom')
 
@@ -77,6 +116,19 @@ display_chatroom()
 message = st.text_input('Type your message here:')
 if st.button('Send Message'):
     add_message(username, message)
+
+# At the beginning of your script, initialize the session state variable
+if 'scrape_news_active' not in st.session_state:
+    st.session_state.scrape_news_active = False
+
+# Modify the button logic to toggle the state
+st.write(f"===Use Manage News to Open/Close News Updates===")
+if st.button('Manage News'):
+    st.session_state.scrape_news_active = not st.session_state.scrape_news_active
+
+# Call display_scraped_news only if the state is True
+if st.session_state.scrape_news_active:
+    display_scraped_news()
 
 # Check if it's time to clear the database
 last_clear_file = 'last_clear.txt'
@@ -93,4 +145,4 @@ else:
         clear_database()
 
 # Auto-refresh every 3 seconds
-st_autorefresh(interval=3000, key="chatroom_auto_refresh")
+# st_autorefresh(interval=3000, key="chatroom_auto_refresh")

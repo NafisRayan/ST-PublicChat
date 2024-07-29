@@ -4,6 +4,10 @@ import os
 from datetime import datetime, timedelta
 from streamlit_autorefresh import st_autorefresh
 
+# Set the theme to dark mode
+st.set_page_config(page_title='Public Chatroom', layout='wide', initial_sidebar_state='expanded', theme='dark')
+
+
 # Connect to SQLite database
 def connect_db():
     conn = sqlite3.connect('chat.db')

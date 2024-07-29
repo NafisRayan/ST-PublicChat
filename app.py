@@ -54,7 +54,8 @@ def display_chatroom():
     messages = c.fetchall()
     for message in messages[::-1]:
         st.write(f"{message[0]}: {message[1]}")
-        st.write(f"sent {message[2]}")
+        d,t = message[2].split(' ')
+        st.write(f"Date: {d} Time: {t}")
         st.write(f"===================================")
 
 def clear_database():

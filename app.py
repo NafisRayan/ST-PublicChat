@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from streamlit_autorefresh import st_autorefresh
 
 # Set the theme to dark mode
-st.set_page_config(page_title='Public Chatroom', theme='dark')
+# st.set_page_config(page_title='Public Chatroom', theme='dark')
 
 
 # Connect to SQLite database

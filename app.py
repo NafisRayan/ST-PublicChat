@@ -37,11 +37,11 @@ def add_message(username, message):
         return  # Exit the function without adding the message
 
     # Check if the username already exists
-    c.execute("SELECT * FROM messages WHERE username=?", (username,))
-    existing_user = c.fetchone()
-    if existing_user:
-        st.error("Username already exists. Please choose another username.")
-        return  # Exit the function without adding the message
+    # c.execute("SELECT * FROM messages WHERE username=?", (username,))
+    # existing_user = c.fetchone()
+    # if existing_user:
+    #     st.error("Username already exists. Please choose another username.")
+    #     return  # Exit the function without adding the message
 
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Format: YYYY-MM-DD HH:MM:SS
     c.execute("INSERT INTO messages (username, text, timestamp) VALUES (?, ?, ?)", (username, message, timestamp))
@@ -109,12 +109,18 @@ st.title('Public Chatroom')
 # User input for sending messages
 default_username = "Guest"
 username = st.text_input('Enter your username:', value=default_username)
-st.write(f"===================================")
-# Display chatroom content
-display_chatroom()
+# st.write(f"===================================")
 
-message = st.text_input('Type your message here:')
-if st.button('Send Message'):
+# Display chatroom content
+messages = c.execute("SELECT username, text, timestamp FROM messages ORDER BY id DESC").fetchall()
+for message in messages[::-1]:
+    with st.chat_message(message[0]):
+        st.write(f"{message[0]}: {message[1]}")
+        d, t = message[2].split(' ')
+        st.write(f"Date: {d} Time: {t}")
+
+message = st.chat_input("Type your message here:")
+if message:
     add_message(username, message)
 
 # At the beginning of your script, initialize the session state variable

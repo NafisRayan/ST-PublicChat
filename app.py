@@ -3,19 +3,8 @@ import sqlite3
 import os
 from datetime import datetime, timedelta
 from streamlit_autorefresh import st_autorefresh
-
-# # bg image
-# page_bg_img = """
-# <style>
-# [data-testid="stAppViewContainer"] {
-# background-image: url(
-# https://cdn.wallpapersafari.com/41/41/vIdSZT.jpg
-# );
-# background-size: cover;
-# }
-# </style>
-# """
-# st.markdown(page_bg_img, unsafe_allow_html=True)
+from bs4 import BeautifulSoup
+import requests
 
 # Connect to SQLite database
 def connect_db():
@@ -36,43 +25,16 @@ def add_message(username, message):
         st.error("Please enter a message.")
         return  # Exit the function without adding the message
 
-    # Check if the username already exists
-    # c.execute("SELECT * FROM messages WHERE username=?", (username,))
-    # existing_user = c.fetchone()
-    # if existing_user:
-    #     st.error("Username already exists. Please choose another username.")
-    #     return  # Exit the function without adding the message
-
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Format: YYYY-MM-DD HH:MM:SS
     c.execute("INSERT INTO messages (username, text, timestamp) VALUES (?, ?, ?)", (username, message, timestamp))
     conn.commit()
     st.success(f"Message added to the chatroom by {username}: {message}")
-
-def display_chatroom():
-    """Display the chatroom content, showing messages along with usernames and timestamps."""
-    c.execute("SELECT username, text, timestamp FROM messages ORDER BY id DESC")
-    messages = c.fetchall()
-    for message in messages[::-1]:
-        st.write(f"{message[0]}: {message[1]}")
-        d,t = message[2].split(' ')
-        st.write(f"Date: {d} Time: {t}")
-        st.write(f"===================================")
 
 def clear_database():
     """Clear the messages table in the database."""
     c.execute("DELETE FROM messages")
     conn.commit()
     st.success(f"Chatroom cleared at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
-
-
-
-
-
-from bs4 import BeautifulSoup
-import requests
-
-from bs4 import BeautifulSoup
-import requests
 
 def scrape_news():
     url = 'http://thedailystar.net'  # Replace with the actual news site URL
@@ -93,7 +55,6 @@ def scrape_news():
     
     return news_items
 
-
 def display_scraped_news():
     news_articles = scrape_news()
     for article in news_articles:
@@ -101,40 +62,48 @@ def display_scraped_news():
         st.write(f"[Read more]({article['link']})")
         st.write("====================================")
 
-
-
 # Streamlit UI
-st.title('Public Chatroom')
+st.sidebar.title('Navigation')
+page = st.sidebar.radio('Go to', ['Public Chat', 'News Update'])
 
+st.sidebar.title('Settings')
 # User input for sending messages
 default_username = "Guest"
-username = st.text_input('Enter your username:', value=default_username)
-# st.write(f"===================================")
+username = st.sidebar.text_input('Enter your username:', value=default_username)
 
-# Display chatroom content
-messages = c.execute("SELECT username, text, timestamp FROM messages ORDER BY id DESC").fetchall()
-for message in messages[::-1]:
-    with st.chat_message(message[0]):
-        st.write(f"{message[0]}: {message[1]}")
-        d, t = message[2].split(' ')
-        st.write(f"Date: {d} Time: {t}")
+# Auto-refresh every 3 seconds
+st_autorefresh(interval=3000, key="chatroom_auto_refresh")
 
-message = st.chat_input("Type your message here:")
-if message:
-    add_message(username, message)
+if page == 'Public Chat':
+    st.title('Public Chatroom')
 
-# At the beginning of your script, initialize the session state variable
-if 'scrape_news_active' not in st.session_state:
-    st.session_state.scrape_news_active = False
+    # Display chatroom content
+    messages = c.execute("SELECT username, text, timestamp FROM messages ORDER BY id DESC").fetchall()
+    for message in messages[::-1]:
+        with st.chat_message(message[0]):
+            st.write(f"{message[0]}: {message[1]}")
+            d, t = message[2].split(' ')
+            st.write(f"Date: {d} Time: {t}")
 
-# Modify the button logic to toggle the state
-st.write(f"Button for News Updates Below:")
-if st.button('Manage News'):
-    st.session_state.scrape_news_active = not st.session_state.scrape_news_active
+    message = st.chat_input("Type your message here:")
+    if message:
+        add_message(username, message)
 
-# Call display_scraped_news only if the state is True
-if st.session_state.scrape_news_active:
-    display_scraped_news()
+elif page == 'News Update':
+    st.title('News Update')
+    
+    # At the beginning of your script, initialize the session state variable
+    if 'scrape_news_active' not in st.session_state:
+        st.session_state.scrape_news_active = False
+
+    # Modify the button logic to toggle the state
+    st.write("Button for News Updates Below:")
+    if st.button('Manage News'):
+        st.session_state.scrape_news_active = not st.session_state.scrape_news_active
+
+    # Call display_scraped_news only if the state is True
+    if st.session_state.scrape_news_active:
+        display_scraped_news()
 
 # Check if it's time to clear the database
 last_clear_file = 'last_clear.txt'
@@ -149,6 +118,3 @@ else:
     with open(last_clear_file, 'w') as file:
         file.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         clear_database()
-
-# Auto-refresh every 3 seconds
-st_autorefresh(interval=3000, key="chatroom_auto_refresh")

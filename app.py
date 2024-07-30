@@ -62,14 +62,17 @@ def display_scraped_news():
         st.write(f"[Read more]({article['link']})")
         st.write("====================================")
 
+
 # Streamlit UI
-st.sidebar.title('Navigation')
-page = st.sidebar.radio('Go to', ['Public Chat', 'News Update'])
 
 st.sidebar.title('Settings')
 # User input for sending messages
 default_username = "Guest"
 username = st.sidebar.text_input('Enter your username:', value=default_username)
+
+st.sidebar.title('Navigation')
+page = st.sidebar.radio('Go to', ['Public Chat', 'News Update'])
+
 
 # Auto-refresh every 3 seconds
 st_autorefresh(interval=3000, key="chatroom_auto_refresh")

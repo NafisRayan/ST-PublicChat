@@ -75,7 +75,7 @@ page = st.sidebar.radio('Go to', ['Public Chat', 'News Update'])
 
 
 # Auto-refresh every 3 seconds
-# st_autorefresh(interval=3000, key="chatroom_auto_refresh")
+st_autorefresh(interval=3000, key="chatroom_auto_refresh")
 
 if page == 'Public Chat':
     st.title('Public Chatroom')
